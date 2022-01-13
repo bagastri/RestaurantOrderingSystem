@@ -1,0 +1,21 @@
+DELIMITER $$
+
+USE `KMMI5`$$
+
+DROP FUNCTION IF EXISTS `GenIdPembeli`$$
+
+CREATE DEFINER=`student`@`%` FUNCTION `GenIdPembeli`() RETURNS VARCHAR(12) CHARSET utf8mb4
+    READS SQL DATA
+BEGIN
+	DECLARE urutan VARCHAR(8);
+    DECLARE ID VARCHAR(12);
+    
+	SELECT LPAD(IFNULL(MAX(SUBSTRING(id_pembeli,10,3))+1, 1),3,"0") INTO urutan
+    FROM pembeli
+    WHERE SUBSTRING(id_pembeli,2,8) = DATE_FORMAT(NOW(), "%Y%m%e");
+    
+    SET ID = CONCAT("P",DATE_FORMAT(NOW(), "%Y%m%e"), urutan);
+RETURN ID;
+END$$
+
+DELIMITER ;
